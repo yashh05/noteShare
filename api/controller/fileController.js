@@ -68,9 +68,9 @@ async function findOrCreateDocument(userId,docId) {
   }
 
   async function giveAcessFile(req,res){
-    const {fileId,giveAccessEmail}=req.body;
+    const {fileId,accessEmail}=req.body;
     try{
-        const user=await User.findOne({email:giveAccessEmail});
+        const user=await User.findOne({email:accessEmail});
         if(!user){
             throw new Error('User does not exist');
         }
@@ -100,9 +100,9 @@ async function findOrCreateDocument(userId,docId) {
   }
 
   async function removeAcessFile(req,res){
-    const {fileId,removeAccessEmail}=req.body;
+    const {fileId,accessEmail}=req.body;
     try{
-        const user=await User.findOne({email:removeAccessEmail});
+        const user=await User.findOne({email:accessEmail});
         if(!user){
             throw new Error('User does not exist');
         }
@@ -110,12 +110,14 @@ async function findOrCreateDocument(userId,docId) {
         File.findOne({_id:fileId})
         .then((doc)=>{
             if(!doc){
-                throw new Error("File doesn't exits")
+                throw new Error("File doesn't exist")
             }
             console.log(user._id.toString());
             doc.allowed=doc.allowed.filter((id)=>{
                 return id!==user._id.toString()
             })
+
+            if(doc.allowed.length===0) return File.deleteOne({_id:fileId})
 
             return doc.save();
         })

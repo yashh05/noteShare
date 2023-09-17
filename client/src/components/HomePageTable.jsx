@@ -8,9 +8,11 @@ const DataTable = () => {
   const [fileArray, setFileArray] = useState([]);
   const userId = useSelector((state) => state.user.userId);
   let [isOpen, setIsOpen] = useState(false);
-  const [giveAccess, setGiveAccess] = useState("");
-  const [removeAccess, setRemoveAccess] = useState("");
-  const [fileId,setFileId]=useState("")
+  const [accessError,setAccessError]=useState("")
+  const [accessEmail, setAccessEmail] = useState("");
+  // const [removeAccess, setRemoveAccess] = useState("");
+  const [fileId, setFileId] = useState("");
+  const [giveAccess, setGiveAccess] = useState(true);
   // const columns = ["File Name", "Edit","Delete"];
 
   function closeModal() {
@@ -35,20 +37,44 @@ const DataTable = () => {
       .then((getFiles) => setFileArray(getFiles));
   }, [userId]);
 
-  async function handleAccessChange() {
-    // console.log(giveAccess ,  removeAccess);
-    await fetch("http://localhost:8080/files/editaccessfile", {
-      method: "DELETE",
+  // async function handleAccessChange() {
+  //   // console.log(giveAccess ,  removeAccess);
+  //   await fetch("http://localhost:8080/files/editaccessfile", {
+  //     method: "DELETE",
+  //     headers: {
+  //       "content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       giveAccess,
+  //       removeAccess,
+  //       fileId
+  //     }),
+  //   })
+  //   closeModal();
+  // }
+
+  async function handleGiveAccess(){
+    const url = `http://localhost:8080/files/${giveAccess ? 'giveaccess' : 'removeaccess'}`;
+    fetch(url,{
+      method: "POST",
       headers: {
         "content-Type": "application/json",
       },
       body: JSON.stringify({
-        giveAccess,
-        removeAccess,
+        accessEmail,
         fileId
       }),
     })
-    closeModal();
+    .then((res)=> res.json())
+    .then(data=>{
+      if(data.error){
+        setAccessError(data.error)
+        console.log(accessError);
+      } 
+      else closeModal(); 
+    })
+
+    
   }
 
   async function handleFileDelete(fileId) {
@@ -73,7 +99,6 @@ const DataTable = () => {
   const data = fileArray.map((file) => {
     return { fileName: file.fileName, fileId: file._id };
   });
-  console.log(data);
 
   return (
     <>
@@ -109,43 +134,62 @@ const DataTable = () => {
                   >
                     Please fill the Details
                   </Dialog.Title>
-                  <div className="mt-2 flex flex-col gap-2">
-                    <label
-                      htmlFor="newAccessUser"
-                      className="text-sm text-gray-500"
-                    >
-                      Enter the Email of new User to give access
-                    </label>
-                    <input
-                      type="text"
-                      id="newAccessUser"
-                      placeholder="Email"
-                      onChange={(e) => setGiveAccess(e.target.value)}
-                      className=" px-3 py-1 rounded-lg focus:outline-none"
-                    />
-                    <label
-                      htmlFor="removeAccess"
-                      className="text-sm text-gray-500"
-                    >
-                      Enter the Email of User to remove the access
-                    </label>
-                    <input
-                      type="text"
-                      id="removeAccess"
-                      placeholder="Email"
-                      onChange={(e) => setRemoveAccess(e.target.value)}
-                      className=" focus:outline-none px-3 py-1 rounded-lg"
-                    />
-                  </div>
 
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={() => handleAccessChange()}
-                    >
-                      Save
-                    </button>
+                  <div className="mt-2 flex flex-col gap-2">
+                    <div className=" w-full flex mb-3 ">
+                      <div
+                        className={`w-3/6 text-center rounded-full ${
+                          giveAccess ? "text-white bg-[#4086F4]" : ""
+                        }`}
+                      >
+                        <button onClick={() =>{
+                         setGiveAccess(true)
+                        }}>
+                          giveAccess
+                          </button>
+                      </div>
+
+                      <div
+                        className={`w-3/6 text-center rounded-full ${
+                          !giveAccess ? "text-white bg-[#4086F4]" : ""
+                        }`}
+                      >
+                        <button onClick={() =>{
+                         setGiveAccess(false)
+                        }}>
+                          Remove Access
+                        </button>
+                      </div>
+                    </div>
+
+                        <label
+                          htmlFor="newAccessUser"
+                          className="text-sm text-gray-500"
+                        >
+                         {giveAccess ?  "Enter the Email of the User to give access":" Enter the Email of the User to Remove access"}
+                        </label>
+
+                        <input
+                          type="text"
+                          id="newAccessUser"
+                          placeholder="Email"
+                          onChange={(e) => setAccessEmail(e.target.value)}
+                          className=" px-3 py-1 rounded-lg focus:outline-none"
+                        />
+
+                        <div className="mt-4">
+                          <button
+                            type="button"
+                            className="inline-flex justify-center rounded-md border
+                       border-transparent bg-blue-100 px-4 py-2 text-sm 
+                       font-medium text-blue-900 hover:bg-blue-200 focus:outline-none
+                        focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          onClick={()=>handleGiveAccess()}
+                          >
+                            Save
+                          </button>
+                        </div>
+                
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -172,10 +216,13 @@ const DataTable = () => {
                   <Link to={`/${row.fileId}`}>{row.fileName}</Link>
                 </td>
                 <td>
-                  <button className=" w-full" onClick={() =>{
-                   openModal()
-                   setFileId(row.fileId)
-                  } }>
+                  <button
+                    className=" w-full"
+                    onClick={() => {
+                      openModal();
+                      setFileId(row.fileId);
+                    }}
+                  >
                     {" "}
                     <img
                       src="/resources/pen.png"

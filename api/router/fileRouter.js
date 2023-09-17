@@ -4,7 +4,6 @@ const {
   createFile,
   getFile,
   deleteFile,
-  editAcessFile,
   giveAcessFile,
   removeAcessFile,
 } = require("../controller/fileController");
