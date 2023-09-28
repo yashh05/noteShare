@@ -11,7 +11,7 @@ const File = require("./models/fileModel");
 app.use(
   "*",
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://note-share-gamma.vercel.app",
     credentials: true,
   })
 );
