@@ -1,15 +1,10 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { signIn } from "../store/slices/userSlice";
-// import Navbar from '../components/Navbar'
-import NavbarMui from "../components/NavbarMui";
-import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -26,6 +21,8 @@ function Signup() {
   const [lastName, setLastName] = useState("");
   const [emailError, setEmailerror] = useState("");
   const [PasswordError, setPasswordError] = useState("");
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
   // const [firstError,setPasswordError]=useState("")
   // const [Error,setPasswordError]=useState("")
 
@@ -36,7 +33,7 @@ function Signup() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:8080/signup", {
+    const res = await fetch("https://noteshare-production-3cb7.up.railway.app/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,6 +49,8 @@ function Signup() {
 
     const data = await res.json();
     if (data.error) {
+      setFirstNameError(data.error.firstName)
+      setLastNameError(data.error.lastName)
       setEmailerror(data.error.email);
       setPasswordError(data.error.password);
     } else {
@@ -254,6 +253,7 @@ export default function SignIn() {
                 autoFocus
                 onChange={(e)=>setFirstName(e.target.value)}
               />
+              <p className=" text-red-500">{firstNameError}</p>
               <TextField
                 margin="normal"
                 required
@@ -264,6 +264,7 @@ export default function SignIn() {
                 autoComplete="lastName"
                 onChange={(e)=>setLastName(e.target.value)}
               />
+              <p className=" text-red-500">{lastNameError}</p>
               <TextField
                 margin="normal"
                 required
@@ -273,8 +274,8 @@ export default function SignIn() {
                 name="email"
                 autoComplete="email"
                 onChange={(e)=>setEmail(e.target.value)}
-
               />
+              <p className=" text-red-500">{emailError}</p>
               <TextField
                 margin="normal"
                 required
@@ -286,6 +287,7 @@ export default function SignIn() {
                 autoComplete="current-password"
                 onChange={(e)=>setPassword(e.target.value)}
               />
+              <p className=" text-red-500">{PasswordError}</p>
               <Button
                 type="submit"
                 fullWidth

@@ -1,6 +1,6 @@
 import React from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 // import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -93,7 +93,7 @@ function Navbar2() {
           <li className=" cursor-pointer">Features</li>
           <li className=" cursor-pointer ">
             <Link
-              to="/signin"
+              to="/signup"
               className="bg-[#1A72E9] text-white rounded-lg px-4 py-2 font-semibold"
             >
               Get Started

@@ -24,7 +24,7 @@ const DataTable = () => {
   }
 
   useEffect(() => {
-    fetch("http://localhost:8080/files/getfiles", {
+    fetch("https://noteshare-production-3cb7.up.railway.app/files/getfiles", {
       method: "POST",
       headers: {
         "content-Type": "application/json",
@@ -54,7 +54,7 @@ const DataTable = () => {
   // }
 
   async function handleGiveAccess(){
-    const url = `http://localhost:8080/files/${giveAccess ? 'giveaccess' : 'removeaccess'}`;
+    const url = `https://noteshare-production-3cb7.up.railway.app/files/${giveAccess ? 'giveaccess' : 'removeaccess'}`;
     fetch(url,{
       method: "POST",
       headers: {
@@ -78,7 +78,7 @@ const DataTable = () => {
   }
 
   async function handleFileDelete(fileId) {
-    await fetch("http://localhost:8080/files/deletefile", {
+    await fetch("https://noteshare-production-3cb7.up.railway.app/files/deletefile", {
       method: "DELETE",
       headers: {
         "content-Type": "application/json",

@@ -24,7 +24,7 @@ function HomePage() {
   }
   async function handleNewFile() {
       try{
-        const data=await fetch("http://localhost:8080/files/createfile",{
+        const data=await fetch("https://noteshare-production-3cb7.up.railway.app/files/createfile",{
           method:"POST",
           headers:{
             'content-Type':'application/json',

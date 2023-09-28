@@ -40,7 +40,7 @@ export default function SignIn() {
   async function handleSubmit(event){
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const res = await fetch("http://localhost:8080/signin", {
+    const res = await fetch("https://noteshare-production-3cb7.up.railway.app/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

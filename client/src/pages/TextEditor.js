@@ -27,7 +27,7 @@ const [quill,setQuill]=useState()
 const [socket,setSocket]=useState()
 
     useEffect(()=>{
-        const s=io("http://localhost:8080")
+        const s=io("https://noteshare-production-3cb7.up.railway.app")
         setSocket(s)
         return ()=>{
           s.disconnect()
