@@ -23,7 +23,7 @@ dbConnect();
 app.use(authRouter);
 app.use("/files", fileRouter);
 
-const server = app.listen(8080, () => {
+const server = app.listen(process.env.PORT || 8080, () => {
   console.log("server is connected");
 });
 
